@@ -1,10 +1,40 @@
+---
+marp: true
+theme: default
+paginate: true
+backgroundColor: #fff
+backgroundImage: url('https://marp.app/assets/hero-background.svg')
+style: |
+  table {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 1em;
+    font-size: 0.75em;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1em;
+  }
+  p {
+    font-size: 1em;
+  }
+---
+
 # ACCESS-AM3 Training
 
-*Presented at the ACCESS Community Workshop on Land and Coupled Modelling, 31 Aug-2 Sep 2026<br/>By Ben Schroeter (ACCESS-NRI)*
+**ACCESS Community Workshop on Land and Coupled Modelling, 2026**
+
+*Dr Benjamin J. E. Schroeter (ACCESS-NRI)*
+
+---
 
 The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://docs.access-hive.org.au/models/run_a_model/run_access-am3/) docs for the purposes of the Coupled/Land Workshop 2026 training.
 
-# Target Audience
+---
+
+## Target Audience
 
 The training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order too appeal to the broadest audience, the instructions that follow start from the basics.
 
@@ -12,6 +42,8 @@ The training is designed to cater to a range of skill levels, from those just st
 - You are familiar with Git/Github
 - You are comfortable using the Linux command line
 - You have experience using the Australian Research Environment (ARE) at NCI.
+
+---
 
 ## Prerequisites
 
@@ -25,7 +57,9 @@ Before you can begin the training, the following prerequisites are required
     - [xp65](https://my.nci.org.au/mancini/project/xp65/join): ACCESS Analysis Environments
     - [hr22](https://my.nci.org.au/mancini/project/hr22/join): Cylc Rose Workflow
 
-Without these criteria met, you will not be able to follow the training and will need to pair up with someone who has met these criteria.
+If you have not done this, you will not be able to follow the training and will need to pair up with someone who has.
+
+---
 
 ## Start a VDI Session on ARE
 
@@ -34,6 +68,8 @@ Without these criteria met, you will not be able to follow the training and will
     Do this at the start of the training while we are talking to ensure that your VDI session is ready.
 
 While it is possible to complete this training over an SSH connection (and you are welcome to), we will be using the Australian Research Environment's (ARE) Virtual Desktop Infrastructure (VDI) to ensure a consistent training experience for participants.
+
+---
 
 To start a VDI session:
 1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your **NCI username and password**.
@@ -47,13 +83,15 @@ To start a VDI session:
 
 Your VDI session will be submitted to the queue, please wait while it starts.
 
+---
+
 ## Set up the Cylc8 workflow environment
 
 The Cylc8 workflow environment contains all of the tools necessary to configure and run numerical suites.
 
 1. Within the VDI session, launch a terminal (black icon, top left).
 
-<div style="text-align: center"><img src="assets/are-terminal.png" alt="ARE Terminal Icon" width="50%"/></div>
+<div style="text-align: center"><img src="../../assets/are-terminal.png" alt="ARE Terminal Icon" width="50%"/></div>
 
 2. Within the terminal, enter the following commands to load the Cylc8 module:   
 
@@ -64,28 +102,29 @@ The Cylc8 workflow environment contains all of the tools necessary to configure 
 
 You will now have access to the Cylc workflow engine and model execution infrastructure.
 
+---
+
 ## Get the ACCESS-AM3 release configuration
 
 The ACCESS-AM3 release configuration is maintained on GitHub. To access the released configuration, execute the following commands within your VDI session.
 
 ```shell
-# Create the roses directory (if it doesn't already exist)
-mkdir -p ~/roses
-
-# Move into it
-cd ~/roses
+# Create the roses directory and move into it
+mkdir -p ~/roses && cd ~/roses
 
 # Clone the configurations repository
 git clone git@github.com:ACCESS-NRI/access-am3-configs.git
 
 # Move into the configs directory
-cd access-am3-configs
+cd access-am3-configs && 
 
 # Check out the tagged n96e release configuration
 git checkout release-n96e-3.0
 ```
 
 You now have the released ACCESS-AM3 configuration ready to run.
+
+---
 
 ## Adjust the run length
 
@@ -98,6 +137,8 @@ sed -i "s/EXPT_RUNLEN='P12M'/EXPT_RUNLEN='P1M'/" rose-suite.conf
 ```
 
 You have now adjusted the run length of the default ACCESS-AM3 configuration to 1 month.
+
+---
 
 ## Start a persistent session
 
@@ -115,15 +156,27 @@ persistent-sessions start -p $PROJECT -n cylc
 
 Your persistent session will start with the name `cylc.$USER.$PROJECT.ps.gadi.nci.org.au`.
 
+---
+
+## Assign the persistent session to Cylc
+
+In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. Do so with the following command.
+
+```shell
+echo cylc.$USER.$PROJECT.ps.gadi.nci.org.au > ~/.persistent-sessions/cylc-session
+```
+
 Now that your persistent session is set up, you can run ACCESS-AM3.
+
+---
 
 ## Start the suite
 
 Cylc8 has 3 steps to do this from the configuration directory:
 
-- `cylc validate` - Validates the suite configuration.
-- `cylc install` - Installs the suite to the working directory.
-- `cylc play` - Runs the suite.
+- `cylc validate .` - Validates the suite configuration.
+- `cylc install .` - Installs the suite to the working directory.
+- `cylc play .` - Runs the suite.
 
 The Cylc developers have provided a shorthand that will execute these in sequence to save time:
 
@@ -132,6 +185,8 @@ cylc vip
 ```
 
 The suite will now execute and start submitting tasks to the scheduler (PBS).
+
+---
 
 ## Monitor the suite
 
@@ -147,11 +202,15 @@ From this interface you can monitor suite progress, check logs and control exect
 
 The tasks `atmos_main`, `install_ancil` etc. will change state as they move through their execution.
 
+---
+
 ## Check the suite has completed
 
 At the completion of the suite, the TUI will simply say that the workflow has the state `stopped`. This can be ambigious as (depending on the nature of the error) it can also mean that the suite has failed. The TUI also unhelpfully hides completed tasks by default.
 
-A sure-fire way to check if the suite has completed is to look at the logs, in particular the overall scheduler log:
+A sure-fire way to check if the suite has completed is to look at the logs, in particular the overall scheduler log.
+
+---
 
 ```shell
 # Move to the cylc-run directory
@@ -170,14 +229,18 @@ cat scheduler/log | grep "succeeded"
 
 If you get no failures, and as many "succeeded" lines as there were tasks submitted, the suite has completed.
 
-## Log Files — Finding and Interpreting Them
+---
+
+## Log Files - Finding and Interpreting Them
 
 While on the subject of logs, ACCESS-AM3 produces the following categories of logging information:
 - Cylc Logs
 - UM Logs
 - PBS Logs
 
-### Cylc Logs
+---
+
+## Cylc Logs
 
 Logs for Cylc 8 are written by default to `/scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/run[N]/log`.
 
@@ -185,6 +248,8 @@ There are a number of files and folders within this directory, however, the most
 
 - `rose-suite-run.log`: the output you would have seen upon starting the suite
 - `job`: a directory containing the jobs (tasks) within the suite.
+
+---
 
 The `job` directory contents follow a certain structure:
 
@@ -195,6 +260,8 @@ Where:
 - `APP_NAME` is the name of the app (component) of the suite
 - `RUN_ATTEMPT` is the run attempt of the app, with NN symlinked to the latest run
 
+---
+
 Within the latest run, the following files may be present:
 - `job`: The compiled script used to launch the job
 - `job-activity.log`: Event history of the job on the scheduler
@@ -204,7 +271,9 @@ Within the latest run, the following files may be present:
 
 These files are the first place to look when diagnosing model issues.
 
-### UM Logs
+---
+
+## UM Logs
 
 Further, you may also look at the raw UM log files (sometimes referred to as "pe_output" or similar) for the last few cycles, available at:
 
@@ -212,11 +281,15 @@ Further, you may also look at the raw UM log files (sometimes referred to as "pe
 
 These logs contain timestep-by-timestep output and is where most model-level errors appear (e.g. instabilities, failed reads of ancillary files) and may help to diagnose your issue.
 
-### PBS Logs
+---
+
+## PBS Logs
 
 The PBS job ID is printed when a task is submitted. `qstat -f <jobid>` or can be used to retrieve PBS-level information about walltime, memory, and exit codes.
 
-For a given task, the PBS log (sometimes referred to as "PBS out") is located in the `job.out` file as described above.
+For a given task, the PBS log (sometimes referred to as "PBS out") is located in the `job.out` file as described earlier.
+
+---
 
 ## Model output
 
@@ -228,6 +301,8 @@ Where:
 - `SUITE_NAME` is the name of your suite
 - `N` is the run count
 
+---
+
 Within this directory are the raw model output files, which follow the naming convention `*.p[a-m]YYYYMMM`, each representing a different output stream or dump frequency.
 
 For convenience, the most frequently used data have been converted to NetCDF under:
@@ -235,6 +310,8 @@ For convenience, the most frequently used data have been converted to NetCDF und
 `/scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/run[N]/share/History_Data/netCDF`
 
 These output files can be opened in the software of your choice to visualise and interpret results.
+
+---
 
 ## Ancillary Files
 
@@ -246,10 +323,14 @@ The locations of the ancillary files used by ACCESS-AM3 are detailed in the foll
 
 This file links the working copies of the model ancillaries to a curated set of inputs maintained by ACCESS-NRI under `/g/data/vk83/configurations/inputs/access-am3` and organised by modelling realm and/or configuration.
 
+---
+
 The majority of these files are generated using an external ancillary suite, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying one the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
 
 !!! NOTE
     Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.
+
+---
 
 ## Troubleshooting
 
@@ -257,12 +338,14 @@ Suites are compilcated pieces of software with many components. The potential fo
 
 To debug a Cylc8 suite in a general sense, the following instructions may be useful.
 
-### 1. Identify the task/job in which the error occurred.
+---
+
+## 1. Identify the task/job in which the error occurred.
 
 To identify where in the suite the failure occurred, navigate to the log directory:
 
 ```shell
-cd /scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/log`
+cd /scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/log
 ```
 
 Navigate to the latest cycle point:
@@ -277,7 +360,9 @@ Within this directory are subdirectories for each of the jobs within the suite. 
 cd $(ls -t | head -1)/NN
 ```
 
-### 2. Diagnose the error
+---
+
+## 2. Diagnose the error
 
 Depending on how the suite has been designed, errors messages can appear in either `job.err` or `job.out`, and be logged as "Error", "Warning", "Critical" etc. To get a general idea of what went wrong, you can try the following commands:
 
