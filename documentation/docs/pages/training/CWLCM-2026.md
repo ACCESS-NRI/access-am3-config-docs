@@ -11,7 +11,7 @@ The training is designed to cater to a range of skill levels, from those just st
 **Assumptions**
 - You are familiar with Git/Github
 - You are comfortable using the Linux command line
-- You have experience using the Australia Research Environment (ARE) at NCI.
+- You have experience using the Australian Research Environment (ARE) at NCI.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Without these criteria met, you will not be able to follow the training and will
 
     Do this at the start of the training while we are talking to ensure that your VDI session is ready.
 
-While it is possible to complete this training over an SSH connection (and you are welcome to) we will be using the Australian Research Environment's (ARE) Virtual Desktop Infrastructure (VDI) to ensure a consistent training experience for participants.
+While it is possible to complete this training over an SSH connection (and you are welcome to), we will be using the Australian Research Environment's (ARE) Virtual Desktop Infrastructure (VDI) to ensure a consistent training experience for participants.
 
 To start a VDI session:
 1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your **NCI username and password**.
@@ -89,7 +89,7 @@ You now have the released ACCESS-AM3 configuration ready to run.
 
 ## Adjust the run length
 
-The default configuration has a run length of 12 months, for the purposes of this training, we will adjust the run length to something shorter so that we can see the suite to completion.
+The default configuration has a run length of 12 months. For the purposes of this training, we will adjust the run length to something shorter so that we can see the suite to completion.
 
 You may do this with the editor of your choice (i.e. `vim`, `nano`), or by running the following one-liner:
 
@@ -135,7 +135,7 @@ The suite will now execute and start submitting tasks to the scheduler (PBS).
 
 ## Monitor the suite
 
-Now that the suite is running, we have the ability to monitor it's progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
+Now that the suite is running, we have the ability to monitor its progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
 
 Within the VDI terminal, execute the following command:
 
