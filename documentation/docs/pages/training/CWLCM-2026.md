@@ -20,13 +20,26 @@ style: |
   p {
     font-size: 1em;
   }
+  img {
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .note {
+    background: #e7f3fe;
+    border-left: 6px solid #2196F3;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin: 16px 0;
+  }
 ---
 
 # ACCESS-AM3 Training
 
 **ACCESS Community Workshop on Land and Coupled Modelling, 2026**
 
-*Dr Benjamin J. E. Schroeter (ACCESS-NRI)*
+*Dr. Benjamin J. E. Schroeter (ACCESS-NRI)*
 
 ---
 
@@ -63,9 +76,7 @@ If you have not done this, you will not be able to follow the training and will 
 
 ## Start a VDI Session on ARE
 
-!!! tip 
-
-    Do this at the start of the training while we are talking to ensure that your VDI session is ready.
+Do this at the start of the training while we are talking to ensure that your VDI session is ready.
 
 While it is possible to complete this training over an SSH connection (and you are welcome to), we will be using the Australian Research Environment's (ARE) Virtual Desktop Infrastructure (VDI) to ensure a consistent training experience for participants.
 
@@ -78,20 +89,28 @@ To start a VDI session:
     - Queue: `normalbw`
     - Compute Size: `small`
     - Project: `tm70`
-    - Storage: `gdata/access+gdata/hh5+gdata/hr22+gdata/ki32`
+    - Storage: `gdata/access+gdata/vk83+gdata/xp65+gdata/hr22`
 3. Leave all other options as default and click "Launch".
 
 Your VDI session will be submitted to the queue, please wait while it starts.
 
 ---
 
+## Some background on ACCESS-AM3 while we wait...
+
+- Spack infrastructure?
+
+---
+
 ## Set up the Cylc8 workflow environment
 
-The Cylc8 workflow environment contains all of the tools necessary to configure and run numerical suites.
+The Cylc8 workflow environment contains all of the tools necessary to configure and run numerical workflows.
 
 1. Within the VDI session, launch a terminal (black icon, top left).
 
-<div style="text-align: center"><img src="../../assets/are-terminal.png" alt="ARE Terminal Icon" width="50%"/></div>
+![ARE Terminal Icon](../../assets/are-terminal.png)
+
+---
 
 2. Within the terminal, enter the following commands to load the Cylc8 module:   
 
@@ -128,7 +147,7 @@ You now have the released ACCESS-AM3 configuration ready to run.
 
 ## Adjust the run length
 
-The default configuration has a run length of 12 months. For the purposes of this training, we will adjust the run length to something shorter so that we can see the suite to completion.
+The default configuration has a run length of 12 months. For the purposes of this training, we will adjust the run length to something shorter so that we can see the workflows to completion.
 
 You may do this with the editor of your choice (i.e. `vim`, `nano`), or by running the following one-liner:
 
@@ -174,9 +193,9 @@ Now that your persistent session is set up, you can run ACCESS-AM3.
 
 Cylc8 has 3 steps to do this from the configuration directory:
 
-- `cylc validate .` - Validates the suite configuration.
-- `cylc install .` - Installs the suite to the working directory.
-- `cylc play .` - Runs the suite.
+- `cylc validate .` - Validates the workflow configuration.
+- `cylc install .` - Installs the workflow to the working directory.
+- `cylc play .` - Runs the workflow.
 
 The Cylc developers have provided a shorthand that will execute these in sequence to save time:
 
@@ -214,10 +233,10 @@ A sure-fire way to check if the suite has completed is to look at the logs, in p
 
 ```shell
 # Move to the cylc-run directory
-cd /scratch/$PROJECT/$USER/cylc-run/access-am3-configs
+cd $HOME/cylc-run/access-am3-configs
 
-# Move into the latest run's log directory (i.e. run1, run2 etc.)
-cd run1/logs
+# Move into the latest run's log directory
+cd runN/logs
 
 # Check the scheduler log for failures
 cat scheduler/log | grep "fail"
@@ -242,7 +261,7 @@ While on the subject of logs, ACCESS-AM3 produces the following categories of lo
 
 ## Cylc Logs
 
-Logs for Cylc 8 are written by default to `/scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/run[N]/log`.
+Logs for Cylc 8 are written by default to `$HOME/cylc-run/[SUITE_NAME]/run[N]/log`.
 
 There are a number of files and folders within this directory, however, the most useful items are:
 
@@ -277,7 +296,7 @@ These files are the first place to look when diagnosing model issues.
 
 Further, you may also look at the raw UM log files (sometimes referred to as "pe_output" or similar) for the last few cycles, available at:
 
-`/scratch/$PROEJCT$/$USER/cylc-run/[SUITE_NAME]/runN/work/YYYYMMDDT0000Z/atmos_main/pe_output`
+`$HOME/cylc-run/[SUITE_NAME]/runN/work/[TIMESTAMP]/atmos_main/pe_output`
 
 These logs contain timestep-by-timestep output and is where most model-level errors appear (e.g. instabilities, failed reads of ancillary files) and may help to diagnose your issue.
 
@@ -285,7 +304,7 @@ These logs contain timestep-by-timestep output and is where most model-level err
 
 ## PBS Logs
 
-The PBS job ID is printed when a task is submitted. `qstat -f <jobid>` or can be used to retrieve PBS-level information about walltime, memory, and exit codes.
+The PBS job ID is printed when a task is submitted. `qstat -f <jobid>` can be used to retrieve PBS-level information about walltime, memory, and exit codes.
 
 For a given task, the PBS log (sometimes referred to as "PBS out") is located in the `job.out` file as described earlier.
 
@@ -295,7 +314,7 @@ For a given task, the PBS log (sometimes referred to as "PBS out") is located in
 
 Model output is written to to the following path:
 
-`/scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/run[N]/share/History_Data`
+`$HOME/cylc-run/[SUITE_NAME]/run[N]/share/History_Data`
 
 Where:
 - `SUITE_NAME` is the name of your suite
@@ -307,7 +326,7 @@ Within this directory are the raw model output files, which follow the naming co
 
 For convenience, the most frequently used data have been converted to NetCDF under:
 
-`/scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/run[N]/share/History_Data/netCDF`
+`$HOME/cylc-run/[SUITE_NAME]/run[N]/share/History_Data/netCDF`
 
 These output files can be opened in the software of your choice to visualise and interpret results.
 
@@ -345,7 +364,7 @@ To debug a Cylc8 suite in a general sense, the following instructions may be use
 To identify where in the suite the failure occurred, navigate to the log directory:
 
 ```shell
-cd /scratch/$PROJECT/$USER/cylc-run/[SUITE_NAME]/log
+cd $HOME/cylc-run/[SUITE_NAME]/runN/log
 ```
 
 Navigate to the latest cycle point:
@@ -372,7 +391,11 @@ grep -i -E "error|warning|critical" job.err
 grep -i -E "error|warning|critical" job.out
 ```
 
-On many occasions, this is sufficient to identify the issue, for example:
+On many occasions, this is sufficient to identify the issue.
+
+---
+
+For example:
 
 ```shell
 grep -i -E "error|warning|critical" job.err
@@ -392,17 +415,21 @@ grep -i -E "error|warning|critical" job.err
 
 If not, you will need to read the log with your favourite text editor (i.e. `vim`, `nano` etc.) to establish the nature and context of the error, including any stacktraces, which may point to further avenues to resolve your failure.
 
+---
+
 ### 3. Digging deeper
 
 If your error resides within the UM itself, you have the option to dig into the raw FORTRAN output from the model. This output is located in the following path:
 
 ```
-/scratch/$PROJECT/$USER/cylc-run/access-am3-configs/run[N]/work/[TIMESTAMP]/atmos_main/pe_output
+$HOME/cylc-run/access-am3-configs/runN/work/[TIMESTAMP]/atmos_main/pe_output
 ```
 
 Where:
 - `N` is the latest run
 - `TIMESTAMP` is the cycle point that has failed
+
+---
 
 Within this directory are the following files:
 - `am3.fort6.pe[NNN]` an output stream from a given processor
