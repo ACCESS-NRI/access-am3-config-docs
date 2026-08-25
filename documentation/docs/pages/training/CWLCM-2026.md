@@ -49,75 +49,53 @@ The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://do
 
 ## Target Audience
 
-The training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order too appeal to the broadest audience, the instructions that follow start from the basics.
+This training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order too appeal to the broadest audience, the instructions that follow start from the basics.
 
 **Assumptions**
-- You are familiar with Git/Github
+- You've completed the prerequisites
+- You are familiar with Git/Github (and you have it set up on Gadi)
 - You are comfortable using the Linux command line
-- You have experience using the Australian Research Environment (ARE) at NCI.
+- You have experience using the Australian Research Environment (ARE) at NCI
 
 ---
 
 ## Prerequisites
 
-Before you can begin the training, the following prerequisites are required
+Before you can begin the training, the following prerequisites are required:
 
 1. An NCI Account
-2. Access to the ACCESS-AM3 configurations
+2. Access to the ACCESS-AM3 configurations repository
 3. Membership to the following projects on NCI
-    - [access](https://my.nci.org.au/mancini/project/access/join): : ACCESS software sharing
+    - [access](https://my.nci.org.au/mancini/project/access/join): ACCESS software sharing
     - [vk83](https://my.nci.org.au/mancini/project/vk83/join): ACCESS Models 
     - [xp65](https://my.nci.org.au/mancini/project/xp65/join): ACCESS Analysis Environments
-    - [hr22](https://my.nci.org.au/mancini/project/hr22/join): Cylc Rose Workflow
+    - [hr22](https://my.nci.org.au/mancini/project/hr22/join): Cylc Rose Workflow 
+    - [nf33](https://my.nci.org.au/mancini/project/nf33/join): Training compute resources
 
-If you have not done this, you will not be able to follow the training and will need to pair up with someone who has.
-
----
-
-## Start a VDI Session on ARE
-
-Do this at the start of the training while we are talking to ensure that your VDI session is ready.
-
-While it is possible to complete this training over an SSH connection (and you are welcome to), we will be using the Australian Research Environment's (ARE) Virtual Desktop Infrastructure (VDI) to ensure a consistent training experience for participants.
+If you have not completed these steps, you may not be able to follow the training and will need to pair up with someone who has.
 
 ---
 
-To start a VDI session:
-1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your **NCI username and password**.
-2. Click on `Virtual Desktop` under *Featured Apps* to configure a new VDI instance with the following details:
-    - Walltime (hours): `3`
-    - Queue: `normalbw`
-    - Compute Size: `small`
-    - Project: `tm70`
-    - Storage: `gdata/access+gdata/vk83+gdata/xp65+gdata/hr22`
-3. Leave all other options as default and click "Launch".
+## Start a Gadi Terminal Session on ARE
 
-Your VDI session will be submitted to the queue, please wait while it starts.
+While it is possible to complete this training over an SSH connection from your local machine (and you are welcome to), we will be using the Australian Research Environment's (ARE) Gadi Terminal session to ensure a consistent training experience.
+
+To start a Gade Terminal session:
+1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your <br/>**NCI username and password**.
+2. Click on Gadi Terminal under "All Apps" (search for it if not visible)
 
 ---
 
-## Some background on ACCESS-AM3 while we wait...
+## Set up the Cylc 8 workflow environment
 
-- Spack infrastructure?
+The Cylc 8 workflow environment contains all of the tools necessary to configure and run numerical workflows.
 
----
+Within the terminal, enter the following commands to load the Cylc 8 module:   
 
-## Set up the Cylc8 workflow environment
-
-The Cylc8 workflow environment contains all of the tools necessary to configure and run numerical workflows.
-
-1. Within the VDI session, launch a terminal (black icon, top left).
-
-![ARE Terminal Icon](../../assets/are-terminal.png)
-
----
-
-2. Within the terminal, enter the following commands to load the Cylc8 module:   
-
-    ```shell
-    module use /g/data/hr22/modulefiles
-    module load cylc/8.6.3
-    ```
+  ```shell
+  module use /g/data/hr22/modulefiles
+  module load cylc/8.6.3
+  ```
 
 You will now have access to the Cylc workflow engine and model execution infrastructure.
 
@@ -134,34 +112,37 @@ mkdir -p ~/roses && cd ~/roses
 # Clone the configurations repository
 git clone git@github.com:ACCESS-NRI/access-am3-configs.git
 
-# Move into the configs directory
-cd access-am3-configs && 
+# or, if you prefer HTTPS
+git clone https://github.com/ACCESS-NRI/access-am3-configs.git
 
-# Check out the tagged n96e release configuration
-git checkout release-n96e-3.0
+# Move into the configs directory, check out the release config
+cd access-am3-configs && git checkout release-n96e-3.0
 ```
 
-You now have the released ACCESS-AM3 configuration ready to run.
+You now have the released ACCESS-AM3 N96 configuration.
 
 ---
 
-## Adjust the run length
+## Exercise: Adjust the run length and project
 
-The default configuration has a run length of 12 months. For the purposes of this training, we will adjust the run length to something shorter so that we can see the workflows to completion.
+The default configuration has a run length of 12 months and inherits the default user project. For the purposes of this training, we will adjust the run length to something shorter so that we can see the workflows to completion and change the project to `nf33`.
 
-You may do this with the editor of your choice (i.e. `vim`, `nano`), or by running the following one-liner:
+You may do this with the editor of your choice (i.e. `vim`, `nano`):
 
 ```shell
-sed -i "s/EXPT_RUNLEN='P12M'/EXPT_RUNLEN='P1M'/" rose-suite.conf
+STORAGE_PROJECT='nf33'
+COMPUTE_PROJECT='nf33'
+...
+EXPT_RUNLEN='P1M'
 ```
 
-You have now adjusted the run length of the default ACCESS-AM3 configuration to 1 month.
+You have now adjusted the run length of the default ACCESS-AM3 configuration to 1 month and set it to use the training project resources.
 
 ---
 
 ## Start a persistent session
 
-The Cylc workflow engine runs on the NCI persistent sessions service. In order for the suite to run, a persistent session must be available.
+The Cylc workflow engine runs on the NCI persistent sessions service. In order for the workflow to run, a persistent session must be available.
 
 Run the following commands in the terminal:
 
@@ -170,10 +151,10 @@ Run the following commands in the terminal:
 /g/data/hr22/bin/gadi-cylc-setup-ps -y
 
 # Start a persisent session
-persistent-sessions start -p $PROJECT -n cylc
+persistent-sessions start -p nf33 cylc
 ```
 
-Your persistent session will start with the name `cylc.$USER.$PROJECT.ps.gadi.nci.org.au`.
+Your persistent session will start with the name `cylc.$USER.nf33.ps.gadi.nci.org.au`.
 
 ---
 
@@ -182,71 +163,81 @@ Your persistent session will start with the name `cylc.$USER.$PROJECT.ps.gadi.nc
 In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. Do so with the following command.
 
 ```shell
-echo cylc.$USER.$PROJECT.ps.gadi.nci.org.au > ~/.persistent-sessions/cylc-session
+echo cylc.$USER.nf33.ps.gadi.nci.org.au > ~/.persistent-sessions/cylc-session
 ```
 
 Now that your persistent session is set up, you can run ACCESS-AM3.
 
 ---
 
-## Start the suite
+## Start the workflow
 
-Cylc8 has 3 steps to do this from the configuration directory:
+Cylc 8 has 3 steps to do this from the configuration directory:
 
 - `cylc validate .` - Validates the workflow configuration.
 - `cylc install .` - Installs the workflow to the working directory.
 - `cylc play .` - Runs the workflow.
 
-The Cylc developers have provided a shorthand that will execute these in sequence to save time:
+The Cylc developers have provided a shorthand that will execute these in sequence to save time, `cylc vip`. To run the workflow under the training project, execute the following command:
 
 ```shell
-cylc vip
+PROJECT=nf33 cylc vip
 ```
 
-The suite will now execute and start submitting tasks to the scheduler (PBS).
+The workflow will now execute and start submitting tasks to the scheduler (PBS).
 
 ---
 
-## Monitor the suite
+## Monitor the workflow
 
-Now that the suite is running, we have the ability to monitor its progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
+Now that the workflow is running, we have the ability to monitor its progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
 
-Within the VDI terminal, execute the following command:
+Within the terminal, execute the following command:
 
 ```shell
 cylc tui
 ```
 
-From this interface you can monitor suite progress, check logs and control exection of tasks. Take some time to navigate the TUI to understand how it works.
-
-The tasks `atmos_main`, `install_ancil` etc. will change state as they move through their execution.
+From this interface you can monitor workflow progress, check logs and control exection of tasks. Take some time to navigate the TUI to understand how it works.
 
 ---
 
-## Check the suite has completed
+## Exercise: Logs
 
-At the completion of the suite, the TUI will simply say that the workflow has the state `stopped`. This can be ambigious as (depending on the nature of the error) it can also mean that the suite has failed. The TUI also unhelpfully hides completed tasks by default.
+The tasks `atmos_main`, `install_ancil` etc. will change state as they move through their execution, see if you can open and view the logs as they become available.
 
-A sure-fire way to check if the suite has completed is to look at the logs, in particular the overall scheduler log.
+Bonus points if you can figure out how to open the log in `vim` *through* the TUI. This will enable you to access additional editor functionality to search through the logs.
 
 ---
+
+## Check the workflow has completed
+
+At the completion of the workflow, the TUI will simply say that the workflow has the state `stopped`. This can be ambigious as (depending on the nature of the error) it can also mean that the workflow has failed. The TUI also unhelpfully hides completed tasks by default. This can be adjusted with task filters if the workflow is still on the scheduler.
+
+A sure-fire way to check if the workflow has completed if you're unsure is to look at the logs, in particular the overall scheduler log.
+
+<div class="note">For brevity, we will use `$WORKFLOW_DIR` in place of `$HOME/cylc-run/access-am3-configs` for the following examples.</div>
+
+---
+
+Exit the TUI with `q` and try the following commands:
 
 ```shell
-# Move to the cylc-run directory
-cd $HOME/cylc-run/access-am3-configs
+# For brevity
+export WORKFLOW_DIR=$HOME/cylc-run/access-am3-configs
 
-# Move into the latest run's log directory
-cd runN/logs
+# Move to the cylc-run directory
+cd $WORKFLOW_DIR
 
 # Check the scheduler log for failures
-cat scheduler/log | grep "fail"
+cat runN/log/scheduler/log | grep "fail"
 
 # Check the scheduler log for successful tasks
-cat scheduler/log | grep "submitted to"
-cat scheduler/log | grep "succeeded"
+cat runN/log/scheduler/log | grep "submitted to"
+cat runN/log/scheduler/log | grep "succeeded"
 ```
 
-If you get no failures, and as many "succeeded" lines as there were tasks submitted, the suite has completed.
+If you get no failures, and as many "succeeded" lines as there were tasks submitted, the workflow has completed successfully.
 
 ---
 
@@ -261,12 +252,12 @@ While on the subject of logs, ACCESS-AM3 produces the following categories of lo
 
 ## Cylc Logs
 
-Logs for Cylc 8 are written by default to `$HOME/cylc-run/[SUITE_NAME]/run[N]/log`.
+The Cylc task logs exposed by the TUI are written by default to `$WORKFLOW_DIR/run[N]/log`.
 
 There are a number of files and folders within this directory, however, the most useful items are:
 
-- `rose-suite-run.log`: the output you would have seen upon starting the suite
-- `job`: a directory containing the jobs (tasks) within the suite.
+- `rose-suite-run.log`: the output you would have seen upon starting the workflow
+- `job`: a directory containing the jobs (tasks) within the workflow.
 
 ---
 
@@ -276,7 +267,7 @@ The `job` directory contents follow a certain structure:
 
 Where:
 - `TIMESTAMP` is the cycle point
-- `APP_NAME` is the name of the app (component) of the suite
+- `APP_NAME` is the name of the app (component) of the workflow
 - `RUN_ATTEMPT` is the run attempt of the app, with NN symlinked to the latest run
 
 ---
@@ -296,7 +287,7 @@ These files are the first place to look when diagnosing model issues.
 
 Further, you may also look at the raw UM log files (sometimes referred to as "pe_output" or similar) for the last few cycles, available at:
 
-`$HOME/cylc-run/[SUITE_NAME]/runN/work/[TIMESTAMP]/atmos_main/pe_output`
+`$WORKFLOW_DIR/runN/work/[TIMESTAMP]/atmos_main/pe_output`
 
 These logs contain timestep-by-timestep output and is where most model-level errors appear (e.g. instabilities, failed reads of ancillary files) and may help to diagnose your issue.
 
@@ -304,7 +295,7 @@ These logs contain timestep-by-timestep output and is where most model-level err
 
 ## PBS Logs
 
-The PBS job ID is printed when a task is submitted. `qstat -f <jobid>` can be used to retrieve PBS-level information about walltime, memory, and exit codes.
+The PBS job ID is captured when a task is submitted. `qstat -f <jobid>` can be used to retrieve PBS-level information about walltime, memory, and exit codes. This can be useful if a job hasn't started (i.e. your project is out of resources for instance).
 
 For a given task, the PBS log (sometimes referred to as "PBS out") is located in the `job.out` file as described earlier.
 
@@ -314,19 +305,15 @@ For a given task, the PBS log (sometimes referred to as "PBS out") is located in
 
 Model output is written to to the following path:
 
-`$HOME/cylc-run/[SUITE_NAME]/run[N]/share/History_Data`
-
-Where:
-- `SUITE_NAME` is the name of your suite
-- `N` is the run count
-
----
+`$WORKFLOW_DIR/runN/share/History_Data`
 
 Within this directory are the raw model output files, which follow the naming convention `*.p[a-m]YYYYMMM`, each representing a different output stream or dump frequency.
 
+---
+
 For convenience, the most frequently used data have been converted to NetCDF under:
 
-`$HOME/cylc-run/[SUITE_NAME]/run[N]/share/History_Data/netCDF`
+`$WORKFLOW_DIR/runN/share/History_Data/netCDF`
 
 These output files can be opened in the software of your choice to visualise and interpret results.
 
@@ -338,52 +325,57 @@ Ancillary files (ancillaries) are pre-processed input fields used by the UM for 
 
 The locations of the ancillary files used by ACCESS-AM3 are detailed in the following configuration file:
 
-`SUITE_DIR/app/install_ancil/rose-app.conf`
+`~/roses/access-am3-configs/app/install_ancil/rose-app.conf`
 
 This file links the working copies of the model ancillaries to a curated set of inputs maintained by ACCESS-NRI under `/g/data/vk83/configurations/inputs/access-am3` and organised by modelling realm and/or configuration.
 
 ---
 
-The majority of these files are generated using an external ancillary suite, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying one the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
+The majority of these files are generated using an external ancillary workflow, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying one the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
 
-!!! NOTE
-    Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.
+<div class="note">Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.</div>
 
 ---
 
 ## Troubleshooting
 
-Suites are compilcated pieces of software with many components. The potential for error increases with suite size and complexity, and each suite many need to be debugged differently.
+Workflows are compilcated pieces of software with many components. The potential for error increases with workflow size and complexity, and each workflow many need to be debugged differently.
 
-To debug a Cylc8 suite in a general sense, the following instructions may be useful.
+To debug a Cylc 8 workflow in a general sense, the following instructions may be useful.
 
 ---
 
 ## 1. Identify the task/job in which the error occurred.
 
-To identify where in the suite the failure occurred, navigate to the log directory:
+To identify where in the workflow the failure occurred, either identify the task in the TUI which is reporting as "failed" or:
 
-```shell
-cd $HOME/cylc-run/[SUITE_NAME]/runN/log
-```
+1. Navigate to the log directory:
 
-Navigate to the latest cycle point:
+  ```shell
+  cd $WORKFLOW_DIR/runN/log
+  ```
 
-```shell
-cd $(ls | tail -1)
-```
+2. Navigate to the latest cycle point:
 
-Within this directory are subdirectories for each of the jobs within the suite. The last folder written is typically the location of the failure. To access the last attempted run of the job, execute the following command:
+  ```shell
+  cd $(ls | tail -1)
+  ```
+
+---
+
+Within this directory are subdirectories for each of the jobs within the workflow. The last folder written is typically the location of the failure. To access the last attempted run of the job, execute the following command:
 
 ```shell
 cd $(ls -t | head -1)/NN
 ```
 
+This command will take you to the latest attempt of the most recently written job directory.
+
 ---
 
 ## 2. Diagnose the error
 
-Depending on how the suite has been designed, errors messages can appear in either `job.err` or `job.out`, and be logged as "Error", "Warning", "Critical" etc. To get a general idea of what went wrong, you can try the following commands:
+Depending on how the workflow has been designed, errors messages can appear in either `job.err` or `job.out`, and be logged as "Error", "Warning", "Critical" etc. To get a general idea of what went wrong, you can try the following commands:
 
 ```shell
 # Case insensitive searches for error/warning/critical
@@ -422,17 +414,32 @@ If not, you will need to read the log with your favourite text editor (i.e. `vim
 If your error resides within the UM itself, you have the option to dig into the raw FORTRAN output from the model. This output is located in the following path:
 
 ```
-$HOME/cylc-run/access-am3-configs/runN/work/[TIMESTAMP]/atmos_main/pe_output
+$WORKFLOW_DIR/runN/work/[TIMESTAMP]/atmos_main/pe_output
 ```
-
-Where:
-- `N` is the latest run
-- `TIMESTAMP` is the cycle point that has failed
-
----
 
 Within this directory are the following files:
 - `am3.fort6.pe[NNN]` an output stream from a given processor
 - `am3.fort6.pe.stdout` an overall output stream
 
-These files may contain additional information to help diagnose your error, however, their interpretation is beyond the scope of this training.
+These files may contain additional information to help diagnose your error. However, their interpretation is beyond the scope of this training.
+
+---
+
+# Summary
+
+Today we have:
+1. Connected to Gadi via a virtual terminal session
+2. Configured Persistent Sessions
+3. Checked out out the N96 release configuration of ACCESS-AM3
+4. Edited the model runtime and project allocations
+5. Run the model
+6. Explored the logs and output locations for the model
+
+---
+
+## Where to get help?
+
+- General Help/Advice
+  [ACCESS Hive Forum](https://forum.access-hive.org.au)
+- Think you've found a bug? Raise an issue.
+  [ACCESS AM3 Configs](https://github.com/ACCESS-NRI/access-am3-configs)
