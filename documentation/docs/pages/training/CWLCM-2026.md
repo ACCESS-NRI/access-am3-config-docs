@@ -43,7 +43,7 @@ style: |
 
 ---
 
-The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://docs.access-hive.org.au/models/run_a_model/run_access-am3/) docs for the purposes of the Coupled/Land Workshop 2026 training.
+The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://docs.access-hive.org.au/models/run_a_model/run_access-am3/) docs for the purposes of the ACCESS Community Workshop on Land and Coupled Modelling 2026.
 
 ---
 
@@ -52,16 +52,17 @@ The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://do
 This training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order to appeal to the broadest audience, the instructions that follow start from the basics.
 
 **Assumptions**
-- You've completed the prerequisites
+
+- You've completed the prerequisites as listed below
 - You are familiar with Git/Github (and you have it set up on Gadi)
 - You are comfortable using the Linux command line
 - You have experience using the Australian Research Environment (ARE) at NCI
 
 ---
 
-## Required technical setup
+## Prerequisites
 
-Before you can begin the training, the following technical setup steps are required:
+Before you can begin the training, the following technical setup is required:
 
 1. An NCI Account
 2. [Access to the ACCESS-AM3 configurations repository](https://forum.access-hive.org.au/t/request-access-to-am3-configurations/5580)
@@ -69,7 +70,7 @@ Before you can begin the training, the following technical setup steps are requi
     - [access](https://my.nci.org.au/mancini/project/access/join): ACCESS software sharing
     - [vk83](https://my.nci.org.au/mancini/project/vk83/join): ACCESS Models 
     - [xp65](https://my.nci.org.au/mancini/project/xp65/join): ACCESS Analysis Environments
-    - [hr22](https://my.nci.org.au/mancini/project/hr22/join): Cylc Rose Workflow 
+    - [hr22](https://my.nci.org.au/mancini/project/hr22/join): Cylc Rose Workflow Engine
     - [nf33](https://my.nci.org.au/mancini/project/nf33/join): Training compute resources
 
 If you have not completed these steps, you may not be able to follow the training and will need to pair up with someone who has.
@@ -81,12 +82,63 @@ If you have not completed these steps, you may not be able to follow the trainin
 While it is possible to complete this training over an SSH connection from your local machine (and you are welcome to), we will be using the Australian Research Environment's (ARE) Gadi Terminal session to ensure a consistent training experience.
 
 To start a Gadi Terminal session:
+
 1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your <br/>**NCI username and password**.
 2. Click on Gadi Terminal under "All Apps" (search for it if not visible)
 
 ---
 
-## Set up the Cylc 8 workflow environment
+## ACCESS-AM3 configurations are Cylc workflows
+
+ACCESS-AM3 is using the Cylc workflow engine to manage the execution of the various tasks (setup, model run, post-processing, clean up and more) needed to run an ACCESS-AM3 experiment. 
+
+The Cylc 8 workflow engine is a generic tool to configure and run workflows. It requires some specific setup before first use.
+
+As such, a successfully completed ACCESS-AM3 experiment is the equivalent of a successfully completed Cylc workflow.
+
+---
+
+## Start a persistent session
+
+The Cylc workflow engine runs on the NCI persistent sessions service. In order for the workflow to run, a persistent session must be available.
+
+To start a persistent session, run the following command:
+
+```
+persistent-sessions start -p nf33 cylc
+```
+
+Your persistent session will start with the name `cylc.$USER.nf33.ps.gadi.nci.org.au`.
+
+---
+
+## Setup the connection for Cylc and the persistent session
+
+Run the following command in the terminal:
+
+```shell
+# Ensure that your persistent session setup is configured correctly
+/g/data/hr22/bin/gadi-cylc-setup-ps -y
+```
+
+The output of this script is verbose, but should conclude with some variation of<br/>`RESULT: PASSED`.
+
+---
+
+## Assign the persistent session to Cylc
+
+In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. If you have used persistent sessions with other models, it may also be useful to assign this to the `CYLC_SESSION` environment variable. Do both with the following commands.
+
+```shell
+export CYLC_SESSION=cylc.$USER.nf33.ps.gadi.nci.org.au
+echo $CYLC_SESSION > ~/.persistent-sessions/cylc-session
+```
+
+Now that your persistent session is assigned to Cylc, you can run ACCESS-AM3.
+
+---
+
+## Start the Cylc 8 workflow environment
 
 The Cylc 8 workflow environment contains all of the tools necessary to configure and run numerical workflows.
 
@@ -127,6 +179,12 @@ You now have the released ACCESS-AM3 N96 configuration.
 
 Checking out the configuration with the previous commands will report that the repository is now in a "Detached HEAD" state. This is expected and simply indicates that you have checked out a specific commit, not any particular branch.
 
+It is good practice to create your own branch before modifying the configuration with:
+
+```git
+git switch -c <choose-a-branch-name>
+```
+
 ---
 
 ## Exercise: Adjust the run length and project
@@ -146,61 +204,21 @@ You have now adjusted the run length of the default ACCESS-AM3 configuration to 
 
 ---
 
-## Start a persistent session
-
-The Cylc workflow engine runs on the NCI persistent sessions service. In order for the workflow to run, a persistent session must be available.
-
-Run the following commands in the terminal:
-
-```shell
-# Ensure that your persistent session setup is configured correctly
-/g/data/hr22/bin/gadi-cylc-setup-ps -y
-```
-
-The output of this script is verbose, but should conclude with some variation of<br/>`RESULT: PASSED`.
-
----
-
-## Start a persistent session
-
-You may now start a persistent session with the following command:
-
-```
-persistent-sessions start -p nf33 cylc
-```
-
-Your persistent session will start with the name `cylc.$USER.nf33.ps.gadi.nci.org.au`.
-
----
-
-## Assign the persistent session to Cylc
-
-In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. If you have used persistent sessions with other models, it may also be useful to assign this to the `CYLC_SESSION` environment variable. Do both with the following commands.
-
-```shell
-export CYLC_SESSION=cylc.$USER.nf33.ps.gadi.nci.org.au
-echo $CYLC_SESSION > ~/.persistent-sessions/cylc-session
-```
-
-Now that your persistent session is assigned to Cylc, you can run ACCESS-AM3.
-
----
-
-## Start the workflow
+## Start the experiment
 
 Cylc 8 has 3 steps to do this from the configuration directory:
 
-- `cylc validate .` - Validates the workflow configuration.
-- `cylc install .` - Installs the workflow to the working directory.
-- `cylc play .` - Runs the workflow.
+- `cylc validate` - Validates the ACCESS-AM3 configuration.
+- `cylc install` - Installs the ACCESS-AM3 experiment to the working directory.
+- `cylc play` - Runs the ACCESS-AM3 experiment.
 
-The Cylc developers have provided a shorthand that will execute these in sequence to save time, `cylc vip`. To run the workflow under the training project, execute the following command:
+The Cylc developers have provided a shorthand that will execute these in sequence to save time, `cylc vip`. To run the experiment under the training project, execute the following command from the configuration directory:
 
 ```shell
 PROJECT=nf33 cylc vip
 ```
 
-The workflow will now execute and start submitting tasks to the scheduler (PBS).
+The experiment will now execute and start submitting tasks to the scheduler (PBS).
 
 ---
 
@@ -209,15 +227,16 @@ The workflow will now execute and start submitting tasks to the scheduler (PBS).
 If Cylc complains that it is unable to connect to a persistent session, this is symptomatic of a conflict in your persistent sessions configuration and usually due to project membership or a failure to exchange SSH keys.
 
 Try logging into your persistent session to initiate the exchange, logging out, then trying again:
+
 1. `ssh cylc.$USER.nf33.ps.gadi.nci.org.au`
 2. `logout`
-3. `cylc vip`
+3. `PROJECT=nf33 cylc vip`
 
 ---
 
-## Monitor the workflow
+## Monitor the experiment
 
-Now that the workflow is running, we have the ability to monitor its progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
+Now that the experiment is running, we have the ability to monitor its progress. There are multiple options to do this, today we will make use of the Terminal User Interface (TUI).
 
 Within the terminal, execute the following command:
 
@@ -225,7 +244,7 @@ Within the terminal, execute the following command:
 cylc tui
 ```
 
-From this interface you can monitor workflow progress, check logs and control exection of tasks. Take some time to navigate the TUI to understand how it works.
+From this interface you can monitor the experiment progress, check logs and control exection of tasks. Take some time to navigate the TUI to understand how it works.
 
 ---
 
@@ -237,13 +256,13 @@ Bonus points if you can figure out how to open the log in `vim` *through* the TU
 
 ---
 
-## Check the workflow has completed
+## Check the experiment has completed
 
-At the completion of the workflow, the TUI will simply say that the workflow has the state `stopped`. This can be ambigious as (depending on the nature of the error) it can also mean that the workflow has failed. The TUI also unhelpfully hides completed tasks by default. This can be adjusted with task filters if the workflow is still on the scheduler.
+At the completion of the experiment, the TUI will simply say that the experiment has the state `stopped`. This can be ambigious as (depending on the nature of the error) it can also mean that the experiment has failed. The TUI also unhelpfully hides completed tasks by default. This can be adjusted with task filters if the experiment is still on the scheduler.
 
-A sure-fire way to check if the workflow has completed if you're unsure is to look at the logs, in particular the overall scheduler log.
+A sure-fire way to check if the experiment has completed if you're unsure is to look at the logs, in particular the overall scheduler log.
 
-<div class="note">For brevity, we will use `$WORKFLOW_DIR` in place of `$HOME/cylc-run/access-am3-configs` for the following examples.</div>
+<div class="note"> For brevity, we will use `$WORKFLOW_DIR` in place of `$HOME/cylc-run/access-am3-configs` for the following examples.</div>
 
 ---
 
@@ -264,13 +283,14 @@ cat runN/log/scheduler/log | grep "submitted to"
 cat runN/log/scheduler/log | grep "succeeded"
 ```
 
-If you get no failures, and as many "succeeded" lines as there were tasks submitted, the workflow has completed successfully.
+If you get no failures, and as many "succeeded" lines as there were tasks submitted, the experiment has completed successfully.
 
 ---
 
 ## Log Files - Finding and Interpreting Them
 
 While on the subject of logs, ACCESS-AM3 produces the following categories of logging information:
+
 - Cylc Logs
 - UM Logs
 - PBS Logs
@@ -283,8 +303,8 @@ The Cylc task logs exposed by the TUI are written by default to `$WORKFLOW_DIR/r
 
 There are a number of files and folders within this directory, however, the most useful items are:
 
-- `rose-suite-run.log`: the output you would have seen upon starting the workflow
-- `job`: a directory containing the jobs (tasks) within the workflow.
+- `rose-suite-run.log`: the output you would have seen upon starting the experiment
+- `job`: a directory containing the jobs (tasks) within the experiment.
 
 ---
 
@@ -293,13 +313,15 @@ The `job` directory contents follow a certain structure:
 `job/[TIMESTAMP]/[TASK_NAME]/[RUN_ATTEMPT]`
 
 Where:
+
 - `TIMESTAMP` is the cycle point
-- `TASK_NAME` is the name of the app (component) of the workflow
+- `TASK_NAME` is the name of the task of the experiment
 - `RUN_ATTEMPT` is the run attempt of the app, with NN symlinked to the latest run
 
 ---
 
 Within the latest run, the following files may be present:
+
 - `job`: The compiled script used to launch the job
 - `job-activity.log`: Event history of the job on the scheduler
 - `job.err`: Captured error messages output to STDERR
@@ -360,7 +382,7 @@ This file links the working copies of the model ancillaries to a curated set of 
 
 The majority of these files are generated using an external ancillary workflow, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
 
-<div class="note">Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.</div>
+<div class="note"> Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.</div>
 
 ---
 
@@ -445,6 +467,7 @@ $WORKFLOW_DIR/runN/work/[TIMESTAMP]/atmos_main/pe_output
 ```
 
 Within this directory are the following files:
+
 - `am3.fort6.pe[NNN]` an output stream from a given processor
 - `am3.fort6.pe.stdout` an overall output stream
 
@@ -452,15 +475,27 @@ These files may contain additional information to help diagnose your error. Howe
 
 ---
 
-# Summary
+## Summary
 
 Today we have:
+
 1. Connected to Gadi via a virtual terminal session
 2. Configured Persistent Sessions
 3. Checked out the n96e released configuration of ACCESS-AM3
 4. Edited the model runtime and project allocations
 5. Run the model
 6. Explored the logs and output locations for the model
+
+---
+
+## Clean up
+
+You need to terminate the persistent session you used for this training so it does not mess up your working environment. 
+Follow these steps:
+
+1. List the persistent sessions: `persistent-sessions list`. Copy the UUID of the persistent session running on `nf33`
+2. Kill the persistent session: `persistent-sessions kill <persistent-session-uuid>`. Paste the UUID copied previously.
+3. Open this file `~/.persistent-sessions/cylc-session` in a text editor and remove this line: `cylc.$USER.nf33.ps.gadi.nci.org.au`, replacing $USER by your NCI login.
 
 ---
 

@@ -122,6 +122,9 @@ nav:
         - Building:              pages/infrastructure/Building.md
         - Git practices:         pages/infrastructure/Git-practices.md
 
+  - Training:
+        - CWLCM 2026: pages/training/CWLCM-2026.md
+
 # Footer
 extra:
   generator: false
