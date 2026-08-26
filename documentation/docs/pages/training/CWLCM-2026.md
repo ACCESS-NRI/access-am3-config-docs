@@ -112,7 +112,7 @@ mkdir -p ~/roses && cd ~/roses
 # Clone the configurations repository
 git clone git@github.com:ACCESS-NRI/access-am3-configs.git
 
-# or, if you prefer HTTPS
+# or, if you prefer HTTPS (and have it set up correctly)
 git clone https://github.com/ACCESS-NRI/access-am3-configs.git
 
 # Move into the configs directory, check out the release config
@@ -120,6 +120,12 @@ cd access-am3-configs && git checkout release-n96e-3.0
 ```
 
 You now have the released ACCESS-AM3 N96 configuration.
+
+---
+
+## Detached what?!
+
+Checking out the configuration with the previous commands will report that the repository is now in a "Detached HEAD" state. This is expected and simply indicates that you have checked out a specific commit, not any particular branch.
 
 ---
 
@@ -149,8 +155,17 @@ Run the following commands in the terminal:
 ```shell
 # Ensure that your persistent session setup is configured correctly
 /g/data/hr22/bin/gadi-cylc-setup-ps -y
+```
 
-# Start a persisent session
+The output of this script is verbose, but should conclude with some variation of<br/>`RESULT: PASSED`.
+
+---
+
+## Start a persisent session
+
+You may now start a persistent session with the following command:
+
+```
 persistent-sessions start -p nf33 cylc
 ```
 
@@ -160,13 +175,14 @@ Your persistent session will start with the name `cylc.$USER.nf33.ps.gadi.nci.or
 
 ## Assign the persistent session to Cylc
 
-In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. Do so with the following command.
+In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. If you have used persistent sessions with other models, it may also be useful to assign this to the `CYLC_SESSION` environment variable. Do both with the following commands.
 
 ```shell
-echo cylc.$USER.nf33.ps.gadi.nci.org.au > ~/.persistent-sessions/cylc-session
+export CYLC_SESSION=cylc.$USER.nf33.ps.gadi.nci.org.au
+echo $CYLC_SESSION > ~/.persistent-sessions/cylc-session
 ```
 
-Now that your persistent session is set up, you can run ACCESS-AM3.
+Now that your persistent session is assigned to Cylc, you can run ACCESS-AM3.
 
 ---
 
@@ -185,6 +201,17 @@ PROJECT=nf33 cylc vip
 ```
 
 The workflow will now execute and start submitting tasks to the scheduler (PBS).
+
+---
+
+## But what if it didn't start?
+
+If Cylc complains that it is unable to connect to a persistent session, this is symptomatic of a conflict in your persistent sessions configuration and usually due to project membership or a failure to exchange SSH keys.
+
+Try logging into your persistent session to initiate the exchange, logging out, then trying again:
+1. `ssh cylc.$USER.nf33.ps.gadi.nci.org.au`
+2. `logout`
+3. `cylc vip`
 
 ---
 
@@ -375,7 +402,7 @@ This command will take you to the latest attempt of the most recently written jo
 
 ## 2. Diagnose the error
 
-Depending on how the workflow has been designed, errors messages can appear in either `job.err` or `job.out`, and be logged as "Error", "Warning", "Critical" etc. To get a general idea of what went wrong, you can try the following commands:
+Depending on how the workflow has been designed, error messages can appear in either `job.err` or `job.out`, and be logged as "Error", "Warning", "Critical" etc. To get a general idea of what went wrong, you can try the following commands:
 
 ```shell
 # Case insensitive searches for error/warning/critical
