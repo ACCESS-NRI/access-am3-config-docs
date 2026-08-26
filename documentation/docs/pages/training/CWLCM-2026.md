@@ -49,7 +49,7 @@ The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://do
 
 ## Target Audience
 
-This training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order too appeal to the broadest audience, the instructions that follow start from the basics.
+This training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order to appeal to the broadest audience, the instructions that follow start from the basics.
 
 **Assumptions**
 - You've completed the prerequisites
@@ -161,7 +161,7 @@ The output of this script is verbose, but should conclude with some variation of
 
 ---
 
-## Start a persisent session
+## Start a persistent session
 
 You may now start a persistent session with the following command:
 
@@ -330,7 +330,7 @@ For a given task, the PBS log (sometimes referred to as "PBS out") is located in
 
 ## Model output
 
-Model output is written to to the following path:
+Model output is written to the following path:
 
 `$WORKFLOW_DIR/runN/share/History_Data`
 
@@ -358,7 +358,7 @@ This file links the working copies of the model ancillaries to a curated set of 
 
 ---
 
-The majority of these files are generated using an external ancillary workflow, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying one the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
+The majority of these files are generated using an external ancillary workflow, the use of which is beyond the scope of this training. However, some limited manual modification may be possible by first copying the target file to a space you control, modifying it, and editing the `install_ancil/rose-app.conf` file to point at your path.
 
 <div class="note">Common mistakes such as date/calendar mismatches, incorrect grid specifications, and missing storage directives in the PBS script may prevent custom ancillaries from being accepted by the model.</div>
 
@@ -366,7 +366,7 @@ The majority of these files are generated using an external ancillary workflow, 
 
 ## Troubleshooting
 
-Workflows are compilcated pieces of software with many components. The potential for error increases with workflow size and complexity, and each workflow many need to be debugged differently.
+Workflows are compilcated pieces of software with many components. The potential for error increases with workflow size and complexity, and each workflow may need to be debugged differently.
 
 To debug a Cylc 8 workflow in a general sense, the following instructions may be useful.
 
@@ -457,7 +457,7 @@ These files may contain additional information to help diagnose your error. Howe
 Today we have:
 1. Connected to Gadi via a virtual terminal session
 2. Configured Persistent Sessions
-3. Checked out out the N96 release configuration of ACCESS-AM3
+3. Checked out the n96e released configuration of ACCESS-AM3
 4. Edited the model runtime and project allocations
 5. Run the model
 6. Explored the logs and output locations for the model
