@@ -59,12 +59,12 @@ This training is designed to cater to a range of skill levels, from those just s
 
 ---
 
-## Prerequisites
+## Required technical setup
 
-Before you can begin the training, the following prerequisites are required:
+Before you can begin the training, the following technical setup steps are required:
 
 1. An NCI Account
-2. Access to the ACCESS-AM3 configurations repository
+2. [Access to the ACCESS-AM3 configurations repository](https://forum.access-hive.org.au/t/request-access-to-am3-configurations/5580)
 3. Membership to the following projects on NCI
     - [access](https://my.nci.org.au/mancini/project/access/join): ACCESS software sharing
     - [vk83](https://my.nci.org.au/mancini/project/vk83/join): ACCESS Models 
@@ -80,7 +80,7 @@ If you have not completed these steps, you may not be able to follow the trainin
 
 While it is possible to complete this training over an SSH connection from your local machine (and you are welcome to), we will be using the Australian Research Environment's (ARE) Gadi Terminal session to ensure a consistent training experience.
 
-To start a Gade Terminal session:
+To start a Gadi Terminal session:
 1. Go to the [Australian Research Environment](https://are.nci.org.au/) website and login with your <br/>**NCI username and password**.
 2. Click on Gadi Terminal under "All Apps" (search for it if not visible)
 
@@ -103,7 +103,7 @@ You will now have access to the Cylc workflow engine and model execution infrast
 
 ## Get the ACCESS-AM3 release configuration
 
-The ACCESS-AM3 release configuration is maintained on GitHub. To access the released configuration, execute the following commands within your VDI session.
+The ACCESS-AM3 release configuration is maintained on GitHub. To access the released configuration, execute the following commands within your Gadi terminal.
 
 ```shell
 # Create the roses directory and move into it
@@ -127,7 +127,7 @@ You now have the released ACCESS-AM3 N96 configuration.
 
 The default configuration has a run length of 12 months and inherits the default user project. For the purposes of this training, we will adjust the run length to something shorter so that we can see the workflows to completion and change the project to `nf33`.
 
-You may do this with the editor of your choice (i.e. `vim`, `nano`):
+You can make these adjustments by editing the `rose-suite.conf` file using the editor of your choice (i.e. `vim`, `nano`):
 
 ```shell
 STORAGE_PROJECT='nf33'
