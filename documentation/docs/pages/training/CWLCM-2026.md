@@ -290,11 +290,11 @@ There are a number of files and folders within this directory, however, the most
 
 The `job` directory contents follow a certain structure:
 
-`job/[TIMESTAMP]/[APP_NAME]/[RUN_ATTEMPT]`
+`job/[TIMESTAMP]/[TASK_NAME]/[RUN_ATTEMPT]`
 
 Where:
 - `TIMESTAMP` is the cycle point
-- `APP_NAME` is the name of the app (component) of the workflow
+- `TASK_NAME` is the name of the app (component) of the workflow
 - `RUN_ATTEMPT` is the run attempt of the app, with NN symlinked to the latest run
 
 ---
@@ -332,7 +332,7 @@ For a given task, the PBS log (sometimes referred to as "PBS out") is located in
 
 Model output is written to the following path:
 
-`$WORKFLOW_DIR/runN/share/History_Data`
+`$WORKFLOW_DIR/runN/share/data/History_Data`
 
 Within this directory are the raw model output files, which follow the naming convention `*.p[a-m]YYYYMMM`, each representing a different output stream or dump frequency.
 
@@ -340,7 +340,7 @@ Within this directory are the raw model output files, which follow the naming co
 
 For convenience, the most frequently used data have been converted to NetCDF under:
 
-`$WORKFLOW_DIR/runN/share/History_Data/netCDF`
+`$WORKFLOW_DIR/runN/share/data/History_Data/netCDF`
 
 These output files can be opened in the software of your choice to visualise and interpret results.
 
