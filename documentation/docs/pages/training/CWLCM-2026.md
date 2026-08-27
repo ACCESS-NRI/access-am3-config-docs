@@ -47,6 +47,12 @@ The following is a guided walkthrough of the [ACCESS-AM3 Run a Model](https://do
 
 ---
 
+## Follow along
+
+To follow along the presentation on your computer, please visit: https://tinyurl.com/AM3-configs-docs and navigate to Training and CWLCM 2026.
+
+---
+
 ## Target Audience
 
 This training is designed to cater to a range of skill levels, from those just starting out to those who have been working with numerical models throughout their career. However, in order to appeal to the broadest audience, the instructions that follow start from the basics.
