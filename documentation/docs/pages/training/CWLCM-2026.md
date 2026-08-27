@@ -92,13 +92,15 @@ To start a Gadi Terminal session:
 
 ACCESS-AM3 is using the Cylc workflow engine to manage the execution of the various tasks (setup, model run, post-processing, clean up and more) needed to run an ACCESS-AM3 experiment. 
 
-The Cylc 8 workflow engine is a generic tool to configure and run workflows. It requires some specific setup before first use.
-
 As such, a successfully completed ACCESS-AM3 experiment is the equivalent of a successfully completed Cylc workflow.
+
+The Cylc 8 workflow engine is a generic tool to configure and run workflows and requires some specific setup before first use.
 
 ---
 
 ## Start a persistent session
+
+<div class="warning"> If you already have a persistent session setup, please use that session. Do not do this setup. </div>
 
 The Cylc workflow engine runs on the NCI persistent sessions service. In order for the workflow to run, a persistent session must be available.
 
@@ -112,6 +114,21 @@ Your persistent session will start with the name `cylc.$USER.nf33.ps.gadi.nci.or
 
 ---
 
+## Assign the persistent session to Cylc
+
+<div class="warning"> If you already have a persistent session setup, please use that session. Do not do this setup. </div>
+
+In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. If you have used other persistent sessions, it may also be useful to assign this to the `CYLC_SESSION` environment variable. Do both with the following commands.
+
+```shell
+export CYLC_SESSION=cylc.$USER.nf33.ps.gadi.nci.org.au
+echo $CYLC_SESSION > ~/.persistent-sessions/cylc-session
+```
+
+Now that your persistent session is assigned to Cylc, you can run ACCESS-AM3.
+
+---
+
 ## Setup the connection for Cylc and the persistent session
 
 Run the following command in the terminal:
@@ -122,19 +139,6 @@ Run the following command in the terminal:
 ```
 
 The output of this script is verbose, but should conclude with some variation of<br/>`RESULT: PASSED`.
-
----
-
-## Assign the persistent session to Cylc
-
-In order to assign this session to Cylc, it needs to be added to a file located at `~/.persistent-sessions/cylc-session`. If you have used persistent sessions with other models, it may also be useful to assign this to the `CYLC_SESSION` environment variable. Do both with the following commands.
-
-```shell
-export CYLC_SESSION=cylc.$USER.nf33.ps.gadi.nci.org.au
-echo $CYLC_SESSION > ~/.persistent-sessions/cylc-session
-```
-
-Now that your persistent session is assigned to Cylc, you can run ACCESS-AM3.
 
 ---
 
@@ -171,7 +175,7 @@ git clone https://github.com/ACCESS-NRI/access-am3-configs.git
 cd access-am3-configs && git checkout release-n96e-3.0
 ```
 
-You now have the released ACCESS-AM3 N96 configuration.
+You now have the released ACCESS-AM3 n96e configuration.
 
 ---
 
@@ -189,7 +193,7 @@ git switch -c <choose-a-branch-name>
 
 ## Exercise: Adjust the run length and project
 
-The default configuration has a run length of 12 months and inherits the default user project. For the purposes of this training, we will adjust the run length to something shorter so that we can see the workflows to completion and change the project to `nf33`.
+The default configuration has a run length of 12 months and inherits the default user project. For the purposes of this training, we will adjust the run length to something shorter so that we can see the experiment to completion and change the project to `nf33`.
 
 You can make these adjustments by editing the `rose-suite.conf` file using the editor of your choice (i.e. `vim`, `nano`):
 
@@ -197,10 +201,11 @@ You can make these adjustments by editing the `rose-suite.conf` file using the e
 STORAGE_PROJECT='nf33'
 COMPUTE_PROJECT='nf33'
 ...
-EXPT_RUNLEN='P1M'
+EXPT_RESUB='P15D'
+EXPT_RUNLEN='P15D'
 ```
 
-You have now adjusted the run length of the default ACCESS-AM3 configuration to 1 month and set it to use the training project resources.
+You have now adjusted the run length of the default ACCESS-AM3 configuration to 15 days and set it to use the training project resources.
 
 ---
 
@@ -283,7 +288,7 @@ cat runN/log/scheduler/log | grep "submitted to"
 cat runN/log/scheduler/log | grep "succeeded"
 ```
 
-If you get no failures, and as many "succeeded" lines as there were tasks submitted, the experiment has completed successfully.
+If you get no failures, and as many "succeeded" lines as "submitted to" lines, the experiment has completed successfully. If there are less "succeeded" lines, the experiment is still running. If there are failures, the experiment has failed and stopped.
 
 ---
 
@@ -490,12 +495,15 @@ Today we have:
 
 ## Clean up
 
-You need to terminate the persistent session you used for this training so it does not mess up your working environment. 
+<div class=warning> Only do the cleanup if you have created a persistent session for the training </div>
+
+You need to terminate the persistent session you used for this training so it does not mess up your working environment. Once you start working with ACCESS-AM3, please set up your own persitent session.
+
 Follow these steps:
 
 1. List the persistent sessions: `persistent-sessions list`. Copy the UUID of the persistent session running on `nf33`
 2. Kill the persistent session: `persistent-sessions kill <persistent-session-uuid>`. Paste the UUID copied previously.
-3. Open this file `~/.persistent-sessions/cylc-session` in a text editor and remove this line: `cylc.$USER.nf33.ps.gadi.nci.org.au`, replacing $USER by your NCI login.
+3. Delete this file `~/.persistent-sessions/cylc-session`.
 
 ---
 
