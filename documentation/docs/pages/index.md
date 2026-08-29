@@ -13,7 +13,7 @@ Welcome to the documentation for the [ACCESS-AM3 model configurations](https://g
 
 In this documentation, you will find:
 
-- information to contribute to the development of ACCESS-AM3, its configurations and their documentation
+- information on how to contribute to the development of ACCESS-AM3, its configurations and their documentation
 - details of the supported configurations, including information on the provenance of the inputs and their creation, on some evaluation and on the outputs from the model
 - technical details of the model's architecture and the build, deployment and testing infrastructure of the model.
 
@@ -28,7 +28,7 @@ All configurations use the [_Rose/Cylc_ workflow management tools](https://docs.
 
 ### Repository structure
 
-Each configuration in [github.com/ACCESS-NRI/access-am3-configs](https://github.com/ACCESS-NRI/access-am3-configs) repository is stored as a git branch. Most of the branches are named according to the following naming scheme:
+Each configuration in [github.com/ACCESS-NRI/access-am3-configs](https://github.com/ACCESS-NRI/access-am3-configs) repository is stored as a git branch. Most of the ACCESS-NRI supported branches are named according to the following naming scheme:
 
 * {dev|release}-{nominal_resolution}
 
@@ -40,7 +40,7 @@ where {nominal_resolution} is the spectral resolution following the conventions 
 
 #### How to use this repository to run a model
 
-The access-am3-configs repository contains many related experimental configurations to facilitate support and discovery. Users will not need all the configurations at once, but rather a single one. Use the information in this documentation to choose the configuration most appropriate to your work, then follow the instructions in the [Run ACCESS-AM3](https://docs.access-hive.org.au/pr-previews/1058/models/run_a_model/run_access-am3/) guide to retrieve and run your chosen configuration.
+The [access-am3-configs](https://github.com/ACCESS-NRI/access-am3-configs) repository contains many related experimental configurations to facilitate support and discovery. Users will not need all the configurations at once, but rather a single one. Use the information in this documentation to choose the configuration most appropriate to your work, then follow the instructions in the [Run ACCESS-AM3](https://docs.access-hive.org.au/pr-previews/1058/models/run_a_model/run_access-am3/) guide to retrieve and run your chosen configuration.
 
 #### CI and Reproducibility Checks
 
