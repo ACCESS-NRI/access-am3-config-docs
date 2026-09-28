@@ -113,7 +113,9 @@ nav:
         - Land Biogeochemistry:    pages/inputs/biogeochemistry.md
 
   - Configurations and Experiments:
-        - Configuration:    pages/configs_experiments/overviewconfiguration.md
+        - Configurations:    
+              - pages/configs_experiments/index.md
+              - n512e-aeroclim: pages/configs_experiments/n512e-aeroclim.md
         - Experiments:    pages/configs_experiments/experiments.md
 
   - Diagnostics:        pages/diagnostics/index.md
