@@ -115,7 +115,7 @@ nav:
   - Configurations and Experiments:
         - Configurations:    
               - pages/configs_experiments/index.md
-              - n512e-aeroclim: pages/configs_experiments/n512e.md
+              - n512e-aeroclim: pages/configs_experiments/n512e-aeroclim.md
         - Experiments:    pages/configs_experiments/experiments.md
 
   - Diagnostics:        pages/diagnostics/index.md
