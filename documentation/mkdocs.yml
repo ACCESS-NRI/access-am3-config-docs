@@ -115,7 +115,7 @@ nav:
   - Configurations and Experiments:
         - Configuration:    pages/configs_experiments/overviewconfiguration.md
         - Experiments:    pages/configs_experiments/experiments.md
-        - High-resolution: pages/configs_experiments/n512e.md
+        - n512e beta: pages/configs_experiments/n512e.md
 
   - Diagnostics:        pages/diagnostics/index.md
   - Infrastructure:    
