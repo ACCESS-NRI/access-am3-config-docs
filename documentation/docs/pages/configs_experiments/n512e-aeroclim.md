@@ -35,7 +35,7 @@ EXPT_RUNLEN='P1M'
 
 ## Ancilliaries
 
-The ancillaries `n512e` were generated using 2 different workflows. The suite `u-dj813` was adapted to create the ozone and ESA (sst and sea ice) ancillaries. All the other ancilliaries, including vegetation fraction, vegetation function and soil are generated with the [CCI-Ancilliary-Suite](https://github.com/ACCESS-NRI/cci-Ancillary-Suite) and based on the 300m resolution [CCI Land Cover dataset](https://catalogue.ceda.ac.uk/uuid/c19b0914521144ab8c18c91d586c6847/).
+The ancillaries `n512e` were generated using 2 different workflows. The suite `u-dj813` was adapted to create the ozone and ESA (sst and sea ice) ancillaries. All the other ancilliaries, including vegetation fraction, vegetation function and soil are generated with the [ACCESS3-AL-Ancillaries](https://github.com/ACCESS-NRI/access3-al-ancillaries) and based on the 300m resolution [CCI Land Cover dataset](https://catalogue.ceda.ac.uk/uuid/c19b0914521144ab8c18c91d586c6847/).
 
 The following is a summary of the ancilliaries that differ from the beta `n96e` configuration.
 
