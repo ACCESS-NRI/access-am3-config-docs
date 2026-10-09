@@ -22,9 +22,11 @@ The default configuration runs with a `n96e` restart file from January 1, 2007. 
 
 To change the restart used, edit the file `site/nci_gadi.rc`:
 
+{% raw %}
+```text
+{% set AINITIAL = '/path/to/restart/file' %}
 ```
-\{% set AINITIAL = '/path/to/restart/file' %\}
-```
+{% endraw %}
 
 The initial date and experiment length is defined in the `rose-suite.conf_nci_gadi` file. The default configuration runs for 1 month, from January 1, 2007. 
 
